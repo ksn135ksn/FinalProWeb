@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>活動資料</title>
+    <!-- 響應式網站 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Boostrap 導入程式 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <!-- 連結CSS外部檔案 -->
+    <link rel="stylesheet" href="./css/post.css">
+    <link rel="stylesheet" href="./css/navbar&footer.css">
+
+     <!--下方為柏宇 2023/4/17寫的-->
+     <script src="./Js/jquery-3.6.0.js"></script>
+      <!--上方為柏宇 2023/4/17寫的-->
+    <!-- 連結Js外部檔案 -->
+    <script src="./Js/index.js"></script>
+    <!-- MDB頭像 -->
+    <script type="text/javascript" src="./Js/mdb.min.js"></script>
+
+   <!--下方為柏宇 2023/4/17寫的-->
+    <script>
+        $(function(){
+
+        $("#joinBtnId").on("click",function(){
+            alert("在post前面");
+
+            $.post("ActivityEnroll",{userId: 3},function(data,status,jqXHR){
+                alert("按鈕有觸發ActivityEnroll Servlet")
+                console.log("按鈕有觸發ActivityEnroll Servlet")
+                alert(data);
+                if(data.redirectToIndex === 'yes' ){
+                	window.alert("報名成功");//彈出視窗
+                	window.location.href="./index.html";
+                }
+                if(data.alreadyJoin === 'yes'){
+                	window.alert("你已報名過");//彈出視窗
+                	window.location.href="./index.html";
+                }
+                console.log("data: " + data);
+                alert(status);
+                console.log("status: " + status);
+                alert(jqXHR);
+                console.log("jqXHR: " + jqXHR);
+                alert(jqXHR.getResponseHeader("isLogin"));
+                 console.log( "jqXHR.getResponseHeader('isLogin')"+ jqXHR.getResponseHeader("isLogin"));
+                //  session.setItem('isLogin',jqXHR.getResponseHeader("isLogin")); 
+            })
+        });
+        
+    })
+
+    </script>
+     <!--上方為柏宇 2023/4/17寫的-->
+</head>
+
+<body>
+    <!-- 導覽列 -->
+    <header class="main-header">
+        <div class="container">
+            <a href="./index.html" class="Logo">
+                <img src="./Images/logo3.png" alt="Logo" width="30" height="36">
+                <h2>Join</h2>
+            </a>
+            <!-- 導覽列文字 -->
+            <nav class="navbar-text">
+                <a href="./latestNews.html">最新消息</a>
+                <a href="./findGym.html">附近場館</a>
+                <a href="./post.html">發起揪團</a>
+                <a href="./joinTeam.html">加入報團</a>
+            </nav>
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <ul class="navbar-nav">
+                        <!-- Avatar頭像 -->
+                        <li class="nav-item Avatar dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                                id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown"
+                                aria-expanded="false">
+                                <img src="./Images/user.png" class="rounded-circle" width="50" height="50"
+                                    alt="Portrait of a Woman" loading="lazy" />
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li> 
+                                    <a class="dropdown-item" href="./login.html">登入</a> 
+                                </li> 
+                                <li> 
+                                    <a class="dropdown-item" href="./login.html">註冊</a> 
+                                </li> 
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- 揪團框 -->
+    <div class="container-post">
+        <!-- 團名 -->
+        <div class="GroupName">
+            <input type="text" placeholder="  團名 : 活動名稱  " class="activityTitle" id="activityTitle" name="">
+        </div>
+        <!-- 圖 & 文字說明 -->
+        <div class="post-area">
+            <!--Image-->
+            <div class="post-Image">
+                <form action="/somewhere/to/upload" enctype="multipart/form-data">
+                    <img id="preview_progressbarTW_img" src="./Images/logo.png"/>
+                </form>
+            </div>
+            <!-- 文字表單 -->
+            <div class="formfile">
+                <!--柏宇 2023/4/17改過-->
+                <form action="">
+                    <div class="location">
+                        <label for="">地點 :</label> 
+                        <p id="location"></p>                       
+                    </div>
+                    <div>
+                        <label for="activityTime">活動時間 :</label>
+                        <p id="activityTime"></p>
+                    </div>
+                    <div>
+                        <label for="deadline">最晚審核時間 :</label>
+                        <p id="deadline"></p>
+                    </div>
+                    <div style="display: flex;">
+                        <label for="min">最低人數 :</label>
+                        <p id="min"></p>
+                    </div>
+                    <div style="display: flex;">
+                        <label for="max">人數上限 :</label>
+                        <p id="max"></p>
+                    </div>
+                    <div style="display: flex;">
+                        <label for="contact">聯絡方式 :</label>
+                        <p id="contact"></p>
+                    </div>
+                    <div>
+                        <label>場地預約 :</label>
+                        <p id="reservation"></p>
+                    </div>
+
+                    <div>
+                        <label>等級推薦 :</label>
+                        <p id="level"></p>
+                    </div>
+                    <br>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">活動說明 :</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                </form>
+                <!--柏宇 2023/4/17改過-->
+            </div>
+        </div>
+        <div class="joinBtn">
+            <!--柏宇 2023/4/17改的-->
+            <div><button type="button" id="joinBtnId">我要報團</button></div>
+            <!--柏宇 2023/4/17改的-->
+        </div>
+    </div>
+   
+</body>
+
+</html>
