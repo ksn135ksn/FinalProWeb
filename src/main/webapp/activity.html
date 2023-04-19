@@ -15,26 +15,66 @@
     <!-- 連結CSS外部檔案 -->
     <link rel="stylesheet" href="./css/post.css">
     <link rel="stylesheet" href="./css/navbar&footer.css">
-
-     <!--下方為柏宇 2023/4/17寫的-->
-     <script src="./Js/jquery-3.6.0.js"></script>
-      <!--上方為柏宇 2023/4/17寫的-->
+    <!--下方為柏宇 2023/4/18寫的-->
+    <script src="./Js/jquery-3.6.0.js"></script>
+    <!--上方為柏宇 2023/4/18寫的-->
     <!-- 連結Js外部檔案 -->
     <script src="./Js/index.js"></script>
     <!-- MDB頭像 -->
     <script type="text/javascript" src="./Js/mdb.min.js"></script>
 
-   <!--下方為柏宇 2023/4/17寫的-->
+    <!--下方為柏宇 2023/4/18寫的-->
     <script>
         $(function(){
-
-        $("#joinBtnId").on("click",function(){
-            alert("在post前面");
-
-            $.post("ActivityEnroll",{userId: 3},function(data,status,jqXHR){
+            $.post("PasteToActivityHTML",{activityId: 5},function(data,status,jqXHR){//還沒解決activityId要如何取得
                 alert("按鈕有觸發ActivityEnroll Servlet")
-                console.log("按鈕有觸發ActivityEnroll Servlet")
+                console.log("按鈕有觸發PasteToActivityHTML Servlet")
                 alert(data);
+                console.log("data: " + data);
+
+                // if(data.cannotFoundActivity === 'yes' ){
+                // 	window.alert("該活動編號不存在");//彈出視窗
+                // 	window.location.href="./index.html";
+                // }
+                // if(data.activityMemberIsMax === 'yes' ){
+                // 	window.alert("活動人數已額滿");//彈出視窗
+                // 	window.location.href="./index.html";
+                // }
+                // if(data.successToShowActivity === 'yes' ){
+                //     alert("data.successToShowActivity");
+                // 	function showActivityInform() {
+                    
+                        $('#activityTitle').prop('value',data.activityTitle);
+                        $('#preview_progressbarTW_img').prop('src',data.pic)//圖片存放的路徑./memberIcon/activity%s.jpg
+                        $('#location').text(data.location);
+                        $('#activityTime').text(data.activityTime);
+                        $('#deadline').text(data.deadline);
+                        $('#min').text(data.min);
+                        $('#max').text(data.max);
+                        $('#contact').text(data.contact);
+                        $('#reservation').text(data.reservation);
+                        $('#level').text(data.level);
+                        $('#description').text(data.description);
+                    // }
+                // 	showActivityInform();
+                // }
+
+                //alert(status);
+                //console.log("status: " + status);
+                //alert(jqXHR);
+                //console.log("jqXHR: " + jqXHR);
+                //alert(jqXHR.getResponseHeader("isLogin"));
+                //console.log( "jqXHR.getResponseHeader('isLogin')"+ jqXHR.getResponseHeader("isLogin"));
+                //  session.setItem('isLogin',jqXHR.getResponseHeader("isLogin")); 
+            })
+            $("#joinBtnId").on("click",function(){
+            //alert("在post前面");
+            console.log(sessionStorage.getItem('member'));
+            
+            $.post("ActivityEnroll",{userId: 4,activityId: 5},function(data,status,jqXHR){
+                //alert("按鈕有觸發ActivityEnroll Servlet")
+                console.log("按鈕有觸發ActivityEnroll Servlet")
+                //alert(data);
                 if(data.redirectToIndex === 'yes' ){
                 	window.alert("報名成功");//彈出視窗
                 	window.location.href="./index.html";
@@ -44,20 +84,18 @@
                 	window.location.href="./index.html";
                 }
                 console.log("data: " + data);
-                alert(status);
+                //alert(status);
                 console.log("status: " + status);
-                alert(jqXHR);
+                //alert(jqXHR);
                 console.log("jqXHR: " + jqXHR);
-                alert(jqXHR.getResponseHeader("isLogin"));
+                //alert(jqXHR.getResponseHeader("isLogin"));
                  console.log( "jqXHR.getResponseHeader('isLogin')"+ jqXHR.getResponseHeader("isLogin"));
                 //  session.setItem('isLogin',jqXHR.getResponseHeader("isLogin")); 
             })
-        });
-        
+        })
     })
-
     </script>
-     <!--上方為柏宇 2023/4/17寫的-->
+     <!--上方為柏宇 2023/4/18寫的-->
 </head>
 
 <body>
@@ -66,7 +104,7 @@
         <div class="container">
             <a href="./index.html" class="Logo">
                 <img src="./Images/logo3.png" alt="Logo" width="30" height="36">
-                <h2>Join</h2>
+                <h2 id="custom-h2">Join</h2>
             </a>
             <!-- 導覽列文字 -->
             <nav class="navbar-text">
@@ -105,6 +143,7 @@
         <!-- 團名 -->
         <div class="GroupName">
             <input type="text" placeholder="  團名 : 活動名稱  " class="activityTitle" id="activityTitle" name="">
+             
         </div>
         <!-- 圖 & 文字說明 -->
         <div class="post-area">
@@ -120,36 +159,36 @@
                 <form action="">
                     <div class="location">
                         <label for="">地點 :</label> 
-                        <p id="location"></p>                       
+                        <span id="location"></span>                       
                     </div>
                     <div>
                         <label for="activityTime">活動時間 :</label>
-                        <p id="activityTime"></p>
+                        <span id="activityTime"></span>
                     </div>
                     <div>
                         <label for="deadline">最晚審核時間 :</label>
-                        <p id="deadline"></p>
+                        <span id="deadline"></span>
                     </div>
                     <div style="display: flex;">
                         <label for="min">最低人數 :</label>
-                        <p id="min"></p>
+                        <span id="min"></span>
                     </div>
                     <div style="display: flex;">
                         <label for="max">人數上限 :</label>
-                        <p id="max"></p>
+                        <span id="max"></span>
                     </div>
                     <div style="display: flex;">
                         <label for="contact">聯絡方式 :</label>
-                        <p id="contact"></p>
+                        <span id="contact"></span>
                     </div>
                     <div>
                         <label>場地預約 :</label>
-                        <p id="reservation"></p>
+                        <span id="reservation"></span>
                     </div>
 
                     <div>
                         <label>等級推薦 :</label>
-                        <p id="level"></p>
+                        <span id="level"></span>
                     </div>
                     <br>
                     <div class="mb-3">

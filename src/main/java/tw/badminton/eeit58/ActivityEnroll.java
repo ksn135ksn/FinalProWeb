@@ -2,11 +2,13 @@ package tw.badminton.eeit58;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
@@ -29,11 +32,22 @@ public class ActivityEnroll extends HttpServlet {
 	private Connection conn;
 	private JSONObject json;
 	private String SelectParticipataion = "SELECT `participataion` FROM `activity` WHERE `id` = ?;"; 
-       
+    
+	public ActivityEnroll() {
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Properties prop = new Properties();
+			prop.put("user", "root");
+			prop.put("password", "root");    		
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/eeit58group3", prop);
+		}catch(Exception e) {
+			System.out.println("44行");
+			e.printStackTrace();
+		}
+    }
 	@Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	System.out.println("doGet");
-    	doPost(req, resp);
     }
 	
 	@Override
@@ -53,7 +67,7 @@ public class ActivityEnroll extends HttpServlet {
 		
 		String userId = request.getParameter("userId");//從http那傳來的 {userId: null}的null
 		
-		System.out.println("userId為: " + userId);
+		System.out.println("目前登入的userId為: " + userId);
 		if(userId == null) {//如果傳進來的值是null
 			System.out.println(userId);
 
@@ -66,10 +80,10 @@ public class ActivityEnroll extends HttpServlet {
 			return;
 		}
 		//要得到使用者點擊的那個活動的活動id
-		String activityId = "5";//測試用
+//		String activityId = "5";//測試用
 		
-//		String activityId = request.getParameter("id");
-		System.out.println("activityId為: " + activityId);
+		String activityId = request.getParameter("activityId");
+		System.out.println("這個頁面的activityId為: " + activityId);
 		
 		//取出 activity 資料表中指定 活動編號(`activity`.`id`) 的 參與人(participataion)欄位
 		//private String SelectParticipataion = "SELECT `participataion` FROM `activity` WHERE `id` = ?;";
@@ -79,13 +93,13 @@ public class ActivityEnroll extends HttpServlet {
 			ResultSet rs = pstmt_select.executeQuery();
 			
 			while(rs.next()) {
-				String unSortData= rs.getString("participataion");//參與人:1,2,
+				String unSortData= rs.getString("participataion");//該筆資料"participataion"欄位的值
 				System.out.println("參與人有:");
 				System.out.println(unSortData);//1,2
 				String[] numbers = unSortData.split(",");//以 逗號 來分割 建立字串陣列
 				System.out.println("String[]: " + numbers);
 				
-				LinkedList participataionList = new LinkedList(Arrays.asList(numbers));//[1, 2, 3]
+				LinkedList participataionList = new LinkedList(Arrays.asList(numbers));//[1, 2]
 				
 				if(participataionList.indexOf(userId) > 0) {//如果在活動參與人欄位 有該帳號的用戶編號時
 					System.out.println("該用戶已經報名過");
@@ -100,7 +114,7 @@ public class ActivityEnroll extends HttpServlet {
 				System.out.println("participataionList[]: " + participataionList);
 			}
 		} catch (SQLException e) {
-			System.out.println("134行");
+			System.out.println("117行");
 			System.out.println(e);
 		}
 		
@@ -126,7 +140,7 @@ public class ActivityEnroll extends HttpServlet {
 				System.out.println("sql執行失敗");
 			}
 		} catch (SQLException e) {
-			System.out.println("出現SQL例外");
+			System.out.println("143行");
 			System.out.println(e);
 		}
 		
@@ -146,7 +160,7 @@ public class ActivityEnroll extends HttpServlet {
 				System.out.println("participataionList[]: " + participataionList);
 			}
 		} catch (SQLException e) {
-			System.out.println("134行");
+			System.out.println("163行");
 			System.out.println(e);
 		}
 
